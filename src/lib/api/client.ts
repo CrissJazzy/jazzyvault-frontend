@@ -16,12 +16,18 @@ export class ApiError extends Error {
 
 async function getAuthHeader(): Promise<Record<string, string>> {
   const supabase = createClient();
+
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
+  console.log("SESSION:", session);
+
   if (!session?.access_token) return {};
-  return { Authorization: `Bearer ${session.access_token}` };
+
+  return {
+    Authorization: `Bearer ${session.access_token}`,
+  };
 }
 
 interface RequestOptions extends Omit<RequestInit, "body"> {
