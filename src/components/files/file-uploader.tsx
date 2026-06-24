@@ -90,16 +90,30 @@ export function FileUploader({ onUploaded }: { onUploaded?: () => void }) {
           `${response.failed_count} file${response.failed_count > 1 ? "s" : ""} failed to upload.`
         );
       }
-    } catch {
-      setQueue((prev) =>
-        prev.map((q) =>
-          q.status === "uploading"
-            ? { ...q, status: "error" as const, error: "Upload failed" }
-            : q
-        )
-      );
-      toast.error("Upload failed. Please try again.");
-    }
+   } catch (error) {
+  console.error("UPLOAD ERROR:", error);
+
+  if (error instanceof Error) {
+    toast.error(error.message);
+  } else {
+    toast.error("Upload failed");
+  }
+
+  setQueue((prev) =>
+    prev.map((q) =>
+      q.status === "uploading"
+        ? {
+            ...q,
+            status: "error",
+            error:
+              error instanceof Error
+                ? error.message
+                : "Upload failed",
+          }
+        : q
+    )
+  );
+}
   };
 
   const removeFromQueue = (index: number) => {
