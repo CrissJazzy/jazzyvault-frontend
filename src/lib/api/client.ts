@@ -23,13 +23,18 @@ async function getAuthHeader(): Promise<Record<string, string>> {
 
   console.log("SESSION:", session);
 
-  if (!session?.access_token) return {};
+  if (!session?.access_token) {
+    console.log("NO ACCESS TOKEN FOUND");
+    return {};
+  }
+
+  console.log("TOKEN FOUND");
+  console.log("TOKEN:", session.access_token.substring(0, 20) + "...");
 
   return {
     Authorization: `Bearer ${session.access_token}`,
   };
 }
-
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
   isFormData?: boolean;
